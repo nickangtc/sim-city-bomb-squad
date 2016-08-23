@@ -30,9 +30,13 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 
   function cut (element) {
-    var el = element.target;
-    consequence(update(el));
-    checkDefuse();
+    if (!gameOver) {
+      var el = element.target;
+      consequence(update(el));
+      if (checkDefuse() === true) {
+        win();
+      }
+    }
   }
 
   function update (el) {
@@ -51,9 +55,29 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 
   function checkDefuse () {
-    var numOfColdWires = 5 - totalHotWires();
-    console.log("number of cold wires this round: " + numOfColdWires);
+    var coldWires = 5 - totalHotWires();
+    var coldWiresCut = 0;
+    for (var i = 0; i < WIRES.length; i++) {
+      if (WIRES[i] === "cut" && WIRES_STATE[i] === 0) {
+        coldWiresCut++;
+      }
+    }
+    console.log("Total cold: " + coldWires + ", total cut: " + coldWiresCut);
+    if (coldWires === coldWiresCut) {
+      return true;
+    }
+    else {
+      return false;
+    }
   }
+
+  function win () {
+    // stop timer
+    console.log("win function");
+    document.getElementById("timer").classList.add("timer-green");
+    gameOver = true;
+  }
+
   function explode () {
     setTimeout(function () {
       document.getElementsByTagName("body")[0].classList.add("exploded");
