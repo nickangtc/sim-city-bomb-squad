@@ -1,58 +1,89 @@
 console.log("javascript running");
 
+// NOTE: ON 'HOT' AND 'COLD' WIRES
+// 'hot' wire when cut will explode
+// all 'cold' wires must be cut to defuse bomb
 document.addEventListener("DOMContentLoaded", function() {
   console.log("DOM loaded");
 
   var WIRES = ["blue", "green", "red", "white", "yellow"];
-  var WIRES_STATE = [0, 0, 0, 0, 0];
-  var gameOver = false;
-  var timeOutID = "";   // assigned when hot wire is first cut, see explode()
+  var WIRES_STATE = [0, 0, 0, 0, 0];  // 1 = hot, 0 = cold
+  var GAMEOVER = false;
+  var TIMEOUTID = "";   // assigned when hot wire is first cut, see explode()
+  var SECONDS = 29;
+  var MILLIS = 999;
 
-  for (var i = 0; i < 5; i++) {
+  // ADD CLICK EVENT LISTENERS TO THE 5 WIRES
+  for (var i = 0; i < WIRES.length; i++) {
     var el = document.getElementById(WIRES[i]);
     el.addEventListener("click", cut);
-    console.log("Added click listener for " + wires[i] + " wire");
   }
+  // RESET BUTTON CLICK LISTENER
+  document.getElementById("reset-btn").addEventListener("click", reset);
+
+  var intervalSec = setInterval(function () {
+    var seconds = document.getElementById("seconds");
+    seconds.textContent = SECONDS;
+    SECONDS--;
+    if (SECONDS < 0) {
+      explode(0);
+      stopTimers("hard");
+    }
+  }, 1000);
+
+  var intervalMS = setInterval(function () {
+    var millis = document.getElementById("millis");
+    millis.textContent = MILLIS;
+    if (MILLIS === 100) {
+      MILLIS = 999;
+    }
+    MILLIS--;
+  }, 1);
 
   generateHotWires();
 
   function generateHotWires () {    // hot wires will explode when cut
-    for (var i = 0; i < WIRES_STATE.length; i++) {
+    for (var i = 0; i < WIRES.length; i++) {
       if (Math.random() < 0.5) {
-        WIRES_STATE[i] = 1;   // 1 is live
+        WIRES_STATE[i] = 1;   // 1 is hot
         console.log(WIRES[i] + " is randomly set to HOT");
       }
     }
     console.log(WIRES_STATE);
   }
 
+  // CONDUIT TO EVERYTHING - RUNS WHEN AN UNCUT WIRE IS CLICKED
   function cut (element) {
-    if (!gameOver) {
+    if (!GAMEOVER) {  // prevents user from cutting wires if game over
       var el = element.target;
-      consequence(update(el));
+      var index = WIRES.indexOf(el.id);
+      update(el);   // change wire img to cut img
+      consequence(index);   // trigger explosion if hot wire is cut
       if (checkDefuse() === true) {
         win();
       }
     }
   }
 
+  // UPDATE CUT WIRE IMG, RETURNS WIRES_STATE INDEX NUMBER
   function update (el) {
     var index = WIRES.indexOf(el.id);
     WIRES[index] = "cut";  // update array
-    console.log("Updated array: " + WIRES);
     var newImgURL = "img/cut-" + el.id + "-wire.png";
     el.src = newImgURL;  // set new img src
-    return index;   // WIRES_STATE array index no.
+    // return index;   // WIRES_STATE array index no.
   }
 
+  // CHECKS IF A HOT WIRE HAS BEEN CUT
   function consequence (wireIndex) {
     if (WIRES_STATE[wireIndex] === 1) {
-      explode();
+      explode(750);
     }
   }
 
+  // CHECKS IF ALL COLD WIRES HAVE BEEN CUT - TRUE/FALSE
   function checkDefuse () {
-    var coldWires = 5 - totalHotWires();
+    var coldWires = totalColdWires();
     var coldWiresCut = 0;
     for (var i = 0; i < WIRES.length; i++) {
       if (WIRES[i] === "cut" && WIRES_STATE[i] === 0) {
@@ -61,7 +92,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
     console.log("Total cold: " + coldWires + ", total cut: " + coldWiresCut);
     if (coldWires === coldWiresCut) {
-      clearTimeout(timeOutID);  // prevents explosion even if hot wire was cut
+      clearTimeout(TIMEOUTID);  // prevents explosion even if hot wire was cut
       return true;
     }
     else {
@@ -69,26 +100,54 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   }
 
+  // STOPS TIMER FROM RUNNING
   function win () {
     // stop timer
     console.log("win function");
     document.getElementById("timer").classList.add("timer-green");
-    gameOver = true;
+    stopTimers();
+    GAMEOVER = true;
   }
 
-  function explode () {
-    timeOutID = setTimeout(function () {
+  // RUNS 750ms COUNTDOWN TO EXPLOSION
+  function explode (delay) {
+    TIMEOUTID = setTimeout(function () {
       document.getElementsByTagName("body")[0].classList.add("exploded");
-      gameOver = true;
-    }, 750)
+      GAMEOVER = true;
+    }, delay)
   }
 
-  function totalHotWires () {
+  // CALCULATES NUMBER OF HOT WIRES THIS ROUND
+  function totalColdWires () {
     // total number of hot wires
-    return WIRES_STATE.filter(function(state) {
+    return 5 - WIRES_STATE.filter(function(state) {
       return state === 1;
     }).length;
   }
 
+  // STOP INTERVAL TIMERS FOR TIMER DISPLAY
+  function stopTimers (type) {
+    clearInterval(intervalSec);
+    clearInterval(intervalMS);
+    if (type === "hard") {  // hard-set ms timer display to 000
+      document.getElementById("millis").textContent = "000";
+    }
+  }
 
+  function reset () {
+    console.log("reset clicked");
+    document.getElementById("seconds").textContent = "30";
+    document.getElementById("millis").textContent = "000";
+    GAMEOVER = false;
+    WIRES = ["blue", "green", "red", "white", "yellow"];
+    WIRES_STATE = [0, 0, 0, 0, 0];
+    GAMEOVER = false;
+    TIMEOUTID = "";
+    SECONDS = 29;
+    MILLIS = 999;
+    if (GAMEOVER) {
+
+    }
+
+  }
 });
