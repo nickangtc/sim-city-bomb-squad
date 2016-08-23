@@ -1,0 +1,29 @@
+body {
+  background-image: url("img/simcity.jpg");
+  background-size: 125%;
+  color: white;
+}
+button {
+  margin-top: 20px;
+  width: 160px;
+}
+.interface {
+  width: 190px;
+  height: 400px;
+  border-radius: 3px;
+  margin-top: 100px;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: black;
+  text-align: center;
+}
+.exploded {
+  background-image: url("img/explosion.jpg");
+}
+.time-green {
+  color: green;
+}
+
+#timer {
+  padding: 20px;
+}
