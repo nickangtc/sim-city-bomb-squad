@@ -19,6 +19,7 @@ button {
 }
 .exploded {
   background-image: url("img/explosion.jpg");
+  background-size: cover;
 }
 .time-green {
   color: green;
