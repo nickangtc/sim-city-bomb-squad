@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", function() {
   var WIRES = ["blue", "green", "red", "white", "yellow"];
   var WIRES_STATE = [0, 0, 0, 0, 0];
   var gameOver = false;
+  var timeOutID = "";   // assigned when hot wire is first cut, see explode()
 
   for (var i = 0; i < 5; i++) {
     var el = document.getElementById(WIRES[i]);
@@ -23,10 +24,6 @@ document.addEventListener("DOMContentLoaded", function() {
       }
     }
     console.log(WIRES_STATE);
-  }
-
-  function hotOrNot () {
-
   }
 
   function cut (element) {
@@ -64,6 +61,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
     console.log("Total cold: " + coldWires + ", total cut: " + coldWiresCut);
     if (coldWires === coldWiresCut) {
+      clearTimeout(timeOutID);  // prevents explosion even if hot wire was cut
       return true;
     }
     else {
@@ -79,7 +77,7 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 
   function explode () {
-    setTimeout(function () {
+    timeOutID = setTimeout(function () {
       document.getElementsByTagName("body")[0].classList.add("exploded");
       gameOver = true;
     }, 750)
@@ -90,14 +88,6 @@ document.addEventListener("DOMContentLoaded", function() {
     return WIRES_STATE.filter(function(state) {
       return state === 1;
     }).length;
-
-    // var total = 0;
-    // for (var i = 0; i < WIRES_STATE.length; i++) {
-    //   if (WIRES_STATE[i] === 1) {
-    //     total++;
-    //   }
-    // }
-    // return total;   // total number of hot wires
   }
 
 
