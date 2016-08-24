@@ -17,6 +17,9 @@ button {
   background-color: black;
   text-align: center;
 }
+.unexploded {
+  background-image: url("img/simcity.jpg");
+}
 .exploded {
   background-image: url("img/explosion.jpg");
   background-size: cover;
@@ -24,7 +27,11 @@ button {
 .timer-green {
   color: green;
 }
+.timer-red {
+  color: red;
+}
 
 #timer {
   padding: 20px;
+  color: red;
 }

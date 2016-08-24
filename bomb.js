@@ -148,6 +148,8 @@ document.addEventListener("DOMContentLoaded", function() {
     console.log("reset clicked");
     document.getElementById("seconds").textContent = "30";
     document.getElementById("millis").textContent = "000";
+    document.getElementsByTagName("body")[0].classList.add("unexploded");
+    document.getElementById("timer").classList.add("timer-green");
     GAMEOVER = false;
     WIRES = ["blue", "green", "red", "white", "yellow"];
     WIRES_STATE = [0, 0, 0, 0, 0];
