@@ -57,7 +57,7 @@ document.addEventListener("DOMContentLoaded", function() {
     if (!GAMEOVER) {  // prevents user from cutting wires if game over
       var el = element.target;
       var index = WIRES.indexOf(el.id);
-      update(el);   // change wire img to cut img
+      update(el, "cut");   // change wire img to cut img
       consequence(index);   // trigger explosion if hot wire is cut
       if (checkDefuse() === true) {
         win();
@@ -66,12 +66,18 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 
   // UPDATE CUT WIRE IMG, RETURNS WIRES_STATE INDEX NUMBER
-  function update (el) {
+  function update (el, action) {
     var index = WIRES.indexOf(el.id);
-    WIRES[index] = "cut";  // update array
-    var newImgURL = "img/cut-" + el.id + "-wire.png";
-    el.src = newImgURL;  // set new img src
-    // return index;   // WIRES_STATE array index no.
+    if (action === "cut") {
+      WIRES[index] = "cut";  // update array
+      var newImgURL = "img/cut-" + el.id + "-wire.png";
+      el.src = newImgURL;  // set new img src
+    }
+    else if (action === "uncut") {  // used only by 'reset' function
+      WIRES[index] = el.id;  // reset array
+      var newImgURL = "img/uncut-" + el.id + "-wire.png";   // uncut!
+      el.src = newImgURL;  // set new img src
+    }
   }
 
   // CHECKS IF A HOT WIRE HAS BEEN CUT
@@ -82,10 +88,14 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 
   // CHECKS IF ALL COLD WIRES HAVE BEEN CUT - TRUE/FALSE
-  function checkDefuse () {
+  function checkDefuse (option) {
+    if (option === "reset") {
+      var coldWires = totalColdWires();
+      var coldWiresCut = 0;
+    }
     var coldWires = totalColdWires();
     var coldWiresCut = 0;
-    for (var i = 0; i < WIRES.length; i++) {
+    for (var i = 0; i < WIRES.length; i++) {  // checks every wire
       if (WIRES[i] === "cut" && WIRES_STATE[i] === 0) {
         coldWiresCut++;
       }
@@ -145,9 +155,12 @@ document.addEventListener("DOMContentLoaded", function() {
     TIMEOUTID = "";
     SECONDS = 29;
     MILLIS = 999;
-    if (GAMEOVER) {
-
+    generateHotWires();
+    for (var i = 0; i < WIRES.length; i++) {
+      var el = document.getElementById(WIRES[i]); // refer to each img element
+      update(el, "uncut");
     }
-
+    checkDefuse("reset");  // resets total cold wires count
+    console.log("reset WIRES: " + WIRES + ", WIRES_STATE: " + WIRES_STATE);
   }
 });
