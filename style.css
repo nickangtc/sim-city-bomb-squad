@@ -1,5 +1,9 @@
+/*html {
+  height: 100%;
+}*/
 body {
   background-image: url("img/simcity.jpg");
+  /*background-size: cover;*/
   background-size: 125%;
   color: white;
 }
@@ -34,4 +38,6 @@ button {
 #timer {
   padding: 20px;
   color: red;
+  font-family: monospace;
+  font-size: 1.2em;
 }

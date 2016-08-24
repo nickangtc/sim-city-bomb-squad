@@ -8,7 +8,7 @@
   </head>
   <body class="unexploded">
     <div class="interface">
-      <div id="timer">0:00:<span id="seconds">30</span>.<span id="millis">000</span>
+      <div id="timer" class="timer-red">0:00:<span id="seconds">30</span>.<span id="millis">000</span>
       </div>
 
       <div id="wires">
@@ -20,6 +20,12 @@
       </div>
 
       <button id="reset-btn" type="button">reset</button>
+
+      <audio id="siren-sound" src="sounds/Siren.wav" autoplay loop></audio>
+      <audio id="explode-sound" src="sounds/BldgExplode.wav"></audio>
+      <audio id="cut-sound" src="sounds/Electricity.wav"></audio>
+      <audio id="yay-sound" src="sounds/CrowdYay.wav"></audio>
+      <audio id="success-sound" src="sounds/success.ogg"></audio>
 
     </div>
   </body>
